@@ -1,0 +1,104 @@
+# Copyright (C) 2019 Cisco Systems, Inc. and/or its affiliates. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: mlpack
+version: "3.2.2"
+url: https://www.mlpack.org/files/mlpack-3.2.2.tar.gz
+archive_name_change: # Optional; delete if not needed.
+  - mlpack-3.2.2 # search pattern
+  - mlpack-3.2.2 # replace pattern
+mussels_version: "0.2"
+type: recipe
+platforms:
+  Darwin:
+    host:
+      build_script:
+        make: |
+          cmake \ 
+          -DBUILD_CLI_EXECUTABLES=OFF \
+          -DBUILD_PYTHON_BINDINGS=OFF \
+          -DDEBUG=OFF \
+          -DPROFILE=OFF \
+          -DARMADILLO_INCLUDE_DIR={install}/include/ \
+          -DARMADILLO_LIBRARY:FILEPATH={install}/lib/libarmadillo.dylib \ 
+          -DBLAS_LIBRARY:FILEPATH={install}/lib/libopenblas.a \
+          -DLAPACK_LIBRARY:FILEPATH={install}/lib/libopenblas.a \
+          -DBOOST_INCLUDEDIR:PATH=/usr/local/Cellar/boost/1.70.0/include \
+          -DBOOST_LIBRARYDIR:PATH=/usr/local/Cellar/boost/1.70.0/lib \
+          -DCMAKE_INSTALL_PREFIX:PATH="{install}"  .
+          make -j 8
+        install: |
+          make install
+      dependencies:
+        - openblas
+        - armadillo
+      install_paths:
+        license/mlpack:
+          - COPYING*
+      required_tools:
+        - cmake
+        - make
+        - clang
+  Windows:
+    x64:
+      build_script:
+        configure: |
+          CALL cmake \ 
+          -DBUILD_CLI_EXECUTABLES=OFF \
+          -DBUILD_PYTHON_BINDINGS=OFF \
+          -DDEBUG=OFF \
+          -DPROFILE=OFF \
+          -DARMADILLO_INCLUDE_DIR={install}/include/ \
+          -DARMADILLO_LIBRARY:FILEPATH={install}/lib/libarmadillo.dylib \ 
+          -DBLAS_LIBRARY:FILEPATH={install}/lib/libopenblas.a \
+          -DLAPACK_LIBRARY:FILEPATH={install}/lib/libopenblas.a \
+          -DBOOST_INCLUDEDIR:PATH=/usr/local/Cellar/boost/1.70.0/include \
+          -DBOOST_LIBRARYDIR:PATH=/usr/local/Cellar/boost/1.70.0/lib \
+          -DCMAKE_INSTALL_PREFIX:PATH="{install}"  .
+        make: |
+          CALL cmake --build . --target install  --config Release
+      install_paths:
+        license/mlpack:
+          - COPYING*
+      required_tools:
+        - cmake
+        - visualstudio
+    x86:
+      build_script:
+        configure: |
+          CALL cmake.exe -A Win32 \
+          -DBUILD_CLI_EXECUTABLES=OFF \
+          -DBUILD_PYTHON_BINDINGS=OFF \
+          -DDEBUG=OFF \
+          -DPROFILE=OFF \
+          -DARMADILLO_INCLUDE_DIR={install}/include/ \
+          -DARMADILLO_LIBRARY:FILEPATH={install}/lib/libarmadillo.dylib \ 
+          -DBLAS_LIBRARY:FILEPATH={install}/lib/libopenblas.a \
+          -DLAPACK_LIBRARY:FILEPATH={install}/lib/libopenblas.a \
+          -DBOOST_INCLUDEDIR:PATH=/usr/local/Cellar/boost/1.70.0/include \
+          -DBOOST_LIBRARYDIR:PATH=/usr/local/Cellar/boost/1.70.0/lib \
+          -DCMAKE_INSTALL_PREFIX:PATH="{install}"  .
+        make: |
+          CALL cmake --build . --target install  --config Release
+      install_paths:
+        license/mlpack:
+          - COPYING*
+      required_tools:
+        - cmake
+        - visualstudio
+
+
+
+
+

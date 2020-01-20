@@ -1,0 +1,67 @@
+# Copyright (C) 2019 Cisco Systems, Inc. and/or its affiliates. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: openblas
+version: "0.3.7"
+url: https://github.com/xianyi/OpenBLAS/archive/v0.3.7.zip
+archive_name_change: # Optional; delete if not needed.
+  - v0.3.7 # search pattern
+  - openblas-0.3.7 # replace pattern
+mussels_version: "0.2"
+type: recipe
+platforms:
+  Darwin:
+    host:
+      build_script:         
+        make: |
+          cmake \
+          -DCMAKE_INSTALL_PREFIX:PATH="{install}"  .
+          make -j 16
+        install: |
+          make install PREFIX="{install}"
+      install_paths:
+        license/openblas:
+          - COPYING*
+      required_tools:
+        - cmake
+        - make
+        - clang
+        - gfortran
+  Windows:
+    x64:
+      build_script:
+        configure: |
+          CALL cmake.exe -DCMAKE_INSTALL_PREFIX:PATH="{install}" .
+        make: |
+          CALL cmake --build . --target install  --config Release
+      install_paths:
+        license/armadillo:
+          - COPYING*
+      required_tools:
+        - cmake
+        - visualstudio
+        - gfortran
+    x86:
+      build_script:
+        configure: |
+          CALL cmake.exe -A Win32 -DCMAKE_INSTALL_PREFIX:PATH="{install}" .
+        make: |
+          CALL cmake --build . --target install  --config Release
+      install_paths:
+        license/armadillo:
+          - COPYING*
+      required_tools:
+        - cmake
+        - visualstudio
+        - gfortran

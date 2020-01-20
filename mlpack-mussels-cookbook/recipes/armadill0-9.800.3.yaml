@@ -1,0 +1,72 @@
+# Copyright (C) 2019 Cisco Systems, Inc. and/or its affiliates. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: armadillo
+version: "9.800.3"
+url: https://github.com/MFaisalZaki/tmp-nav-ext-packages/raw/master/armadillo-9.800.3.tar.gz
+archive_name_change: # Optional; delete if not needed.
+  - armadillo-9.800.3 # search pattern
+  - armadillo-9.800.3 # replace pattern
+mussels_version: "0.2"
+type: recipe
+platforms:
+  Darwin:
+    host:
+      build_script:         
+        make: |
+          cmake \
+          -DDETECT_HDF5=OFF \
+          -DCMAKE_INSTALL_PREFIX:PATH="{install}"  .
+          make
+        install: |
+          make install PREFIX="{install}"
+      dependencies:
+        - openblas
+      install_paths:
+        license/armadillo:
+          - COPYING*
+      required_tools:
+        - cmake
+        - make
+        - clang
+  Windows:
+    x64:
+      build_script:
+        configure: |
+          CALL cmake.exe -DDETECT_HDF5=OFF -DCMAKE_INSTALL_PREFIX:PATH="{install}" .
+        make: |
+          CALL cmake --build . --target install  --config Release
+      dependencies:
+        - openblas
+      install_paths:
+        license/armadillo:
+          - COPYING*
+      required_tools:
+        - cmake
+        - visualstudio
+    x86:
+      build_script:
+        configure: |
+          CALL cmake.exe -A Win32 -DDETECT_HDF5=OFF -DCMAKE_INSTALL_PREFIX:PATH="{install}" .
+        make: |
+          CALL cmake --build . --target install  --config Release
+      dependencies:
+        - openblas
+      install_paths:
+        license/armadillo:
+          - COPYING*
+      required_tools:
+        - cmake
+        - visualstudio
+
